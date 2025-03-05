@@ -47,9 +47,11 @@ class MainActivity : AppCompatActivity() {
     private fun observeViewModel() {
         viewModel.state.observe(this) { state ->
 
-            binding.progressBarLoading.visibility = View.GONE
-            binding.buttonCalculate.isEnabled = true
-            binding.editTextNumber.isEnabled = true
+            with(binding) {
+                progressBarLoading.visibility = View.GONE
+                buttonCalculate.isEnabled = true
+                editTextNumber.isEnabled = true
+            }
 
             when (state) {
                 is Error -> stateIsError()
@@ -68,9 +70,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stateIsInProgress() {
-        binding.progressBarLoading.visibility = View.VISIBLE
-        binding.buttonCalculate.isEnabled = false
-        binding.editTextNumber.isEnabled = false
+        with(binding) {
+            progressBarLoading.visibility = View.VISIBLE
+            buttonCalculate.isEnabled = false
+            editTextNumber.isEnabled = false
+        }
     }
 
 }
