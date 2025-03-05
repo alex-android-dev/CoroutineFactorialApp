@@ -56,13 +56,13 @@ class MainActivity : AppCompatActivity() {
             when (state) {
                 is Error -> stateIsError()
                 is Progress -> stateIsInProgress()
-                is Result -> stateIsResult(state)
+                is Factorial -> stateIsResult(state)
             }
         }
     }
 
     private fun stateIsResult(state: State) {
-        binding.textViewFactorial.text = (state as Result).factorial
+        binding.textViewFactorial.text = (state as Factorial).value
     }
 
     private fun stateIsError() {
