@@ -46,29 +46,35 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.state.observe(this) { state ->
-            stateIsInProgress(state)
-            stateIsError(state)
 
-            binding.textViewFactorial.text = state.factorial
-        }
+            with(binding) {
+                progressBarLoading.visibility = View.GONE
+                buttonCalculate.isEnabled = true
+                editTextNumber.isEnabled = true
+            }
 
-    }
-
-    private fun stateIsError(state: State) {
-        if (state.isError) {
-            Toast.makeText(this, "You didn't enter value", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun stateIsInProgress(state: State) {
-        if (state.isInProgress) {
-            binding.progressBarLoading.visibility = View.VISIBLE
-            binding.buttonCalculate.isEnabled = false
-            binding.editTextNumber.isEnabled = false
-        } else {
-            binding.progressBarLoading.visibility = View.GONE
-            binding.buttonCalculate.isEnabled = true
-            binding.editTextNumber.isEnabled = true
+            when (state) {
+                is Error -> stateIsError()
+                is Progress -> stateIsInProgress()
+                is Result -> stateIsResult(state)
+            }
         }
     }
+
+    private fun stateIsResult(state: State) {
+        binding.textViewFactorial.text = (state as Result).factorial
+    }
+
+    private fun stateIsError() {
+        Toast.makeText(this, "You didn't enter value", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun stateIsInProgress() {
+        with(binding) {
+            progressBarLoading.visibility = View.VISIBLE
+            buttonCalculate.isEnabled = false
+            editTextNumber.isEnabled = false
+        }
+    }
+
 }

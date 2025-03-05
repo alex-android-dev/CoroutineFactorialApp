@@ -7,31 +7,18 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-data class State(
-    val isError: Boolean = false,
-    val isInProgress: Boolean = false,
-    val factorial: String = "",
-)
-
 class MainViewModel : ViewModel() {
 
-    private val _state = MutableLiveData<State>(State())
+    private val _state = MutableLiveData<State>()
 
     val state: LiveData<State>
         get() = _state
 
     fun calculate(value: String?) {
-
-        _state.value = state.value?.copy(
-            isInProgress = true
-        )
-
+        _state.value = Progress
 
         if (value.isNullOrBlank()) {
-            _state.value = state.value?.copy(
-                isInProgress = false,
-                isError = true
-            )
+            _state.value = Error
             return
         }
 
@@ -40,13 +27,8 @@ class MainViewModel : ViewModel() {
 
         viewModelScope.launch {
             delay(1000)
-            _state.value = state.value?.copy(
-                isInProgress = false,
-                factorial = number.toString()
-            )
+            _state.value = Result(number.toString())
         }
-
-
     }
 
 
