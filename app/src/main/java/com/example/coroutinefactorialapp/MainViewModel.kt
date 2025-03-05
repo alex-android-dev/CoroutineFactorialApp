@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
@@ -12,6 +15,11 @@ import java.math.BigInteger
 class MainViewModel : ViewModel() {
 
     private val _state = MutableLiveData<State>()
+
+    private val myCoroutineScope = CoroutineScope(
+        Dispatchers.Main +
+                CoroutineName("myCoroutineScope")
+    )
 
     val state: LiveData<State>
         get() = _state
@@ -24,13 +32,18 @@ class MainViewModel : ViewModel() {
             return
         }
 
-        viewModelScope.launch {
+        myCoroutineScope.launch {
             val number = value.toLong()
             val result = withContext(Dispatchers.Default) {
                 factorial(number)
             }
             _state.value = Factorial(result)
         }
+    }
+
+    override fun onCleared() {
+        myCoroutineScope.cancel()
+        super.onCleared()
     }
 
     private fun factorial(number: Long): String {
