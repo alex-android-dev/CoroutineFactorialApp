@@ -26,22 +26,21 @@ class MainViewModel : ViewModel() {
 
         viewModelScope.launch {
             val number = value.toLong()
-            val result = factorial(number)
-            _state.value = Factorial(result.toString())
+            val result = withContext(Dispatchers.Default) {
+                factorial(number)
+            }
+            _state.value = Factorial(result)
         }
     }
 
-    private suspend fun factorial(number: Long): String {
+    private fun factorial(number: Long): String {
+        var result = BigInteger.ONE
 
-        return withContext(Dispatchers.Default) {
-            var result = BigInteger.ONE
-
-            for (i in 1..number) {
-                result = result.multiply(BigInteger.valueOf(i))
-            }
-
-            result.toString()
+        for (i in 1..number) {
+            result = result.multiply(BigInteger.valueOf(i))
         }
+
+        return result.toString()
     }
 
 
